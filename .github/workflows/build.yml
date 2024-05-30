@@ -22,7 +22,11 @@ jobs:
                 mkdir ${{ github.workspace }}\utils\yasm
                 cd ${{ github.workspace }}\utils\yasm
                 curl http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe -o yasm.exe
-                "${{ github.workspace }}\utils\yasm" | Out-File -FilePath $env:GITHUB_PATH -Append
+                "${{ github.workspace }}\utils\yasm;" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+            - name: Echo Path
+              run: |
+                echo %PATH%
 
             - name: Build Libvpx
               run: |
