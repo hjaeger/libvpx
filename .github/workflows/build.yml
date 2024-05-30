@@ -38,7 +38,7 @@ jobs:
             - name: Build Libvpx
               shell: msys2 {0}
               run: |
-                cd ${{github.workspace}}
+                cd D:/a/libvpx/libvpx
                 configure "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
                 cd build/make
                 bash -l -c make
