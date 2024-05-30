@@ -14,7 +14,7 @@ jobs:
             - name: Install VS Dependencies
               run:
                 choco install visualstudio2022-workload-nativedesktop --package-parameters "--includeRecommended --includeOptional"
-                
+
             - name: Install MSYS
               uses: msys2/setup-msys2@v2
                 
@@ -36,6 +36,14 @@ jobs:
             - name: Build Libvpx
               run: |
                 mkdir output
-                bash -l -c configure "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
+                bash -l -c configure "--log=yes" "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
                 bash -l -c make
                 bash -l -c install V=1
+
+            - name: Upload log
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                name: Config log
+                path: ${{ github.workspace }}
+                overwrite: true
