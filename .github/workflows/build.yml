@@ -1,0 +1,35 @@
+name: Windows Build
+on:
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Install MSYS
+              uses: msys2/setup-msys2@v2
+                
+            - name: Install Doxygen
+              uses: ssciwr/doxygen-install@v1
+
+            - name: Install YASM
+              run: |
+                mkdir ${{ github.workspace }}\utils\yasm
+                cd ${{ github.workspace }}\utils.yasm
+                curl http://www.tortall.net/projects/yasm/releases/yasm-1.3.0-win64.exe -o yasm.exe
+                "${{ github.workspace }}\utils\yasm" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+            - name: Build Libvpx
+              run: |
+                cd ${{ github.workspace }}
+                mkdir build
+                cd build
+                mkdir output
+                cd build
+                cp -Rf ${{ github.workspace }}\libvpx .
+                bash -l -c configure "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/build/output" "--target=x86_win64-vs17"
