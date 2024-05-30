@@ -25,12 +25,13 @@ jobs:
                 "${{ github.workspace }}\utils\yasm;" | Out-File -FilePath $env:GITHUB_PATH -Append
 
             - name: Echo Path
+              shell: cmd
               run: |
                 echo %PATH%
 
             - name: Build Libvpx
               run: |
                 mkdir output
-                cd build
-                cp -Rf ${{ github.workspace }} .
                 bash -l -c configure "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
+                bash -l -c make V=1 "BUILD_ROOT=."
+                bash -l -c install V=1
