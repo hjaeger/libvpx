@@ -17,6 +17,8 @@ jobs:
 
             - name: Install MSYS
               uses: msys2/setup-msys2@v2
+              with:
+                msystem: MINGW64
                 
             - name: Install Doxygen
               uses: ssciwr/doxygen-install@v1
@@ -34,11 +36,13 @@ jobs:
                 echo %PATH%
 
             - name: Build Libvpx
+              shell: msys2 {0}
               run: |
-                mkdir output
-                bash -l -c configure "--log=yes" "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
+                cd ${{github.workspace}}
+                configure "--enable-multithread" "--enable-realtime-only" "--enable-spatial-resampling" "--enable-vp8" "--disable-vp9" "--enable-libs" "--disable-install-docs" "--disable-debug-libs" "--disable-examples" "--disable-tools" "--as=yasm" "--prefix=${{github.workspace}}/output" "--target=x86_win64-vs17"
+                cd build/make
                 bash -l -c make
-                bash -l -c install V=1
+                bash -l -c install
 
             - name: Upload log
               uses: actions/upload-artifact@v4
